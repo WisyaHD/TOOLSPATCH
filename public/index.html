@@ -3,179 +3,481 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JSON Encrypt/Decrypt</title>
+    <title>JSON Encrypt/Decrypt - Patch Tool</title>
     <style>
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-          sans-serif;
+      * {
         margin: 0;
         padding: 0;
-        background: #0f172a;
-        color: #e5e7eb;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
       }
-      .card {
-        background: #020617;
-        border-radius: 12px;
-        padding: 24px;
-        max-width: 480px;
+
+      body::before {
+        content: '';
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 50%);
+        animation: gradientMove 15s ease infinite;
+      }
+
+      @keyframes gradientMove {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-50px, -50px); }
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
         width: 100%;
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
-        border: 1px solid #1f2937;
+        max-width: 520px;
       }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px 32px;
+        box-shadow: 
+          0 20px 60px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        animation: slideUp 0.6s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .icon svg {
+        width: 32px;
+        height: 32px;
+        stroke: white;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
       h1 {
-        font-size: 20px;
-        margin: 0 0 16px;
-        color: #f9fafb;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
+
+      .subtitle {
+        font-size: 14px;
+        color: #64748b;
+      }
+
       label {
         display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        color: #9ca3af;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
       }
-      input[type='file'],
+
+      .field {
+        margin-bottom: 24px;
+      }
+
+      input[type='file'] {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 2px dashed #cbd5e1;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      input[type='file']:hover {
+        border-color: #667eea;
+        background: #f1f5f9;
+      }
+
+      input[type='file']:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
       input[type='text'],
       select {
         width: 100%;
-        padding: 8px 10px;
-        border-radius: 8px;
-        border: 1px solid #374151;
-        background: #020617;
-        color: #e5e7eb;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+        color: #1e293b;
         font-size: 14px;
-        box-sizing: border-box;
+        transition: all 0.3s ease;
       }
+
+      input[type='text']:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
       input[type='text']::placeholder {
-        color: #6b7280;
+        color: #94a3b8;
       }
-      .field {
-        margin-bottom: 14px;
-      }
-      button {
-        width: 100%;
-        padding: 10px 12px;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(135deg, #4f46e5, #06b6d4);
-        color: white;
-        font-weight: 600;
+
+      select {
         cursor: pointer;
-        font-size: 14px;
-        margin-top: 4px;
       }
-      button:disabled {
-        opacity: 0.6;
-        cursor: default;
-      }
-      .status {
-        margin-top: 10px;
-        font-size: 13px;
-        min-height: 18px;
-      }
-      .status.error {
-        color: #fca5a5;
-      }
-      .status.success {
-        color: #6ee7b7;
-      }
+
       .hint {
         font-size: 12px;
-        color: #6b7280;
-        margin-top: 4px;
+        color: #64748b;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .hint::before {
+        content: 'ℹ';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: #e0e7ff;
+        color: #667eea;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 16px;
+        font-size: 11px;
+        font-weight: bold;
+      }
+
+      button {
+        width: 100%;
+        padding: 14px 24px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+      }
+
+      button:hover::before {
+        left: 100%;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .status {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 500;
+        animation: fadeIn 0.3s ease;
+        display: none;
+      }
+
+      .status.show {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .status.error {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+      }
+
+      .status.success {
+        background: #d1fae5;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+      }
+
+      .status.processing {
+        background: #dbeafe;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(37, 99, 235, 0.3);
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          padding: 32px 24px;
+        }
+        h1 {
+          font-size: 24px;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>JSON Encrypt / Decrypt</h1>
-      <form id="form">
-        <div class="field">
-          <label for="file">JSON file</label>
-          <input type="file" id="file" name="file" accept="application/json" />
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h1>JSON Encrypt Tool</h1>
+          <p class="subtitle">Secure your JSON data with encryption</p>
         </div>
-        <div class="field">
-          <label for="keys">Field name(s)</label>
-          <input
-            type="text"
-            id="keys"
-            name="keys"
-            placeholder="contoh: tag_id,kode_intern"
-          />
-          <div class="hint">Pisahkan dengan koma jika lebih dari satu field.</div>
-        </div>
-        <div class="field">
-          <label for="type">Mode</label>
-          <select id="type" name="type">
-            <option value="encrypt">Encrypt</option>
-            <option value="decrypt">Decrypt</option>
-          </select>
-        </div>
-        <button type="submit">Proses &amp; Download</button>
-        <div id="status" class="status"></div>
-      </form>
+        <form id="form">
+          <div class="field">
+            <label for="file">📁 Select JSON File</label>
+            <input type="file" id="file" name="file" accept="application/json" />
+          </div>
+
+          <div class="field">
+            <label for="keys">🔑 Field Names</label>
+            <input
+              type="text"
+              id="keys"
+              name="keys"
+              placeholder="e.g., tag_id, kode_intern, nama_barang"
+            />
+            <div class="hint">Separate multiple fields with commas</div>
+          </div>
+
+          <div class="field">
+            <label for="type">⚙️ Operation Mode</label>
+            <select id="type" name="type">
+              <option value="encrypt">🔒 Encrypt - Secure data</option>
+              <option value="decrypt">🔓 Decrypt - Reveal data</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submitBtn">
+            <span id="btnText">Process & Download</span>
+          </button>
+          
+          <div id="status" class="status"></div>
+        </form>
+      </div>
+      
+      <div class="footer">
+        Made with ❤️ for secure data processing
+      </div>
     </div>
 
     <script>
       const form = document.getElementById('form');
       const statusEl = document.getElementById('status');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        statusEl.textContent = '';
+        
+        // Reset status
         statusEl.className = 'status';
+        statusEl.classList.remove('show');
 
         const fileInput = document.getElementById('file');
         const keysInput = document.getElementById('keys');
         const typeInput = document.getElementById('type');
 
+        // Validation
         if (!fileInput.files[0]) {
-          statusEl.textContent = 'Silakan pilih file JSON terlebih dahulu.';
-          statusEl.classList.add('error');
+          showStatus('⚠️ Please select a JSON file first', 'error');
           return;
         }
 
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-        formData.append('keys', keysInput.value);
-        formData.append('type', typeInput.value);
+        const file = fileInput.files[0];
+        const text = await file.text();
 
-        form.querySelector('button').disabled = true;
-        statusEl.textContent = 'Memproses...';
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (err) {
+          showStatus('❌ Invalid JSON file format', 'error');
+          return;
+        }
+
+        const payload = {
+          data: json,
+          keys: keysInput.value,
+          type: typeInput.value,
+        };
+
+        // Show processing state
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<span class="spinner"></span> Processing...';
+        showStatus('⏳ Processing your data...', 'processing');
 
         try {
-          const res = await fetch('/process', {
+          const res = await fetch('/.netlify/functions/process', {
             method: 'POST',
-            body: formData,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
           });
 
           if (!res.ok) {
             const text = await res.text();
-            throw new Error(text || 'Request gagal');
+            throw new Error(text || 'Request failed');
           }
 
-          const blob = await res.blob();
+          const resultJson = await res.json();
+          
+          // Create and download file
+          const blob = new Blob([JSON.stringify(resultJson, null, 2)], {
+            type: 'application/json',
+          });
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'processed.json';
+          a.download = `processed_${typeInput.value}_${Date.now()}.json`;
           document.body.appendChild(a);
           a.click();
           a.remove();
           window.URL.revokeObjectURL(url);
 
-          statusEl.textContent = 'Berhasil diproses. File sudah ter-download.';
-          statusEl.classList.add('success');
+          showStatus('✅ Success! File downloaded', 'success');
+          
+          // Reset form after 3 seconds
+          setTimeout(() => {
+            form.reset();
+            statusEl.classList.remove('show');
+          }, 3000);
+
         } catch (err) {
-          statusEl.textContent = 'Error: ' + err.message;
-          statusEl.classList.add('error');
+          showStatus('❌ Error: ' + err.message, 'error');
         } finally {
-          form.querySelector('button').disabled = false;
+          submitBtn.disabled = false;
+          btnText.textContent = 'Process & Download';
+        }
+      });
+
+      function showStatus(message, type) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type} show`;
+      }
+
+      // File input preview
+      document.getElementById('file').addEventListener('change', function(e) {
+        if (e.target.files[0]) {
+          const fileName = e.target.files[0].name;
+          showStatus(`📄 Selected: ${fileName}`, 'processing');
         }
       });
     </script>
   </body>
-  </html>
+</html>
