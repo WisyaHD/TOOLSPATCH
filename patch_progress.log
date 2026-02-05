@@ -1,0 +1,645 @@
+============================================================
+CONFIGURATION
+============================================================
+MongoDB URI: mongodb://nsi:CPJQhiZ8x8k5@103... (hidden)
+DB Member: tmsambassg
+DB Jual: db_hdpayn_asli
+DB Beli: db_hdpayn_asli
+Collection tt_member: tt_member
+Collection tt_jual_detail: tt_jual_detail
+Collection tt_beli_detail: tt_beli_detail
+Collection tt_hutang_detail: tt_hutang_detail
+============================================================
+
+============================================================
+DATABASE MAPPING
+============================================================
+AN1: tmsambassg
+AN2: tmsambaskj
+AN3: tmsambasks
+AN4: tmsambasmg
+AN5: tmsambassj2
+AN6: tmsambaskk
+AN7: tmsambasbjg
+============================================================
+
+Loading tmsambassg.tt_member_transformed.json...
+✓ Loaded 464,900 records from tmsambassg.tt_member_transformed.json
+
+Connecting to MongoDB...
+✓ Connected to MongoDB successfully
+
+[Step 1] Collecting kode_barcode to lookup...
+✓ Total transaction items: 464,900
+✓ Items need lookup: 464,900
+✓ Distribution by kode_toko:
+  - AN1: 155,525 unique barcodes → tmsambassg
+  - AN2: 44,330 unique barcodes → tmsambaskj
+  - AN3: 35,229 unique barcodes → tmsambasks
+  - AN4: 112,391 unique barcodes → tmsambasmg
+  - AN5: 34,712 unique barcodes → tmsambassj2
+  - AN6: 41,637 unique barcodes → tmsambaskk
+  - AN7: 33,097 unique barcodes → tmsambasbjg
+
+[Step 2] Building cache from tt_jual_detail per database...
+
+  Processing AN1 → tmsambassg
+    Progress: 5,000/155,525 barcodes checked, 5,083 records found
+    Progress: 10,000/155,525 barcodes checked, 10,169 records found
+    Progress: 15,000/155,525 barcodes checked, 15,276 records found
+    Progress: 20,000/155,525 barcodes checked, 20,372 records found
+    Progress: 25,000/155,525 barcodes checked, 25,461 records found
+    Progress: 30,000/155,525 barcodes checked, 30,553 records found
+    Progress: 35,000/155,525 barcodes checked, 35,650 records found
+    Progress: 40,000/155,525 barcodes checked, 40,738 records found
+    Progress: 45,000/155,525 barcodes checked, 45,819 records found
+    Progress: 50,000/155,525 barcodes checked, 50,921 records found
+    Progress: 55,000/155,525 barcodes checked, 56,022 records found
+    Progress: 60,000/155,525 barcodes checked, 61,126 records found
+    Progress: 65,000/155,525 barcodes checked, 66,219 records found
+    Progress: 70,000/155,525 barcodes checked, 71,323 records found
+    Progress: 75,000/155,525 barcodes checked, 76,403 records found
+    Progress: 80,000/155,525 barcodes checked, 81,499 records found
+    Progress: 85,000/155,525 barcodes checked, 86,576 records found
+    Progress: 90,000/155,525 barcodes checked, 91,679 records found
+    Progress: 95,000/155,525 barcodes checked, 96,783 records found
+    Progress: 100,000/155,525 barcodes checked, 101,871 records found
+    Progress: 105,000/155,525 barcodes checked, 106,968 records found
+    Progress: 110,000/155,525 barcodes checked, 112,037 records found
+    Progress: 115,000/155,525 barcodes checked, 117,118 records found
+    Progress: 120,000/155,525 barcodes checked, 122,202 records found
+    Progress: 125,000/155,525 barcodes checked, 127,286 records found
+    Progress: 130,000/155,525 barcodes checked, 132,382 records found
+    Progress: 135,000/155,525 barcodes checked, 137,482 records found
+    Progress: 140,000/155,525 barcodes checked, 142,572 records found
+    Progress: 145,000/155,525 barcodes checked, 147,661 records found
+    Progress: 150,000/155,525 barcodes checked, 152,762 records found
+    Progress: 155,000/155,525 barcodes checked, 157,859 records found
+    Progress: 155,525/155,525 barcodes checked, 158,396 records found
+    ✓ Cached 155,199 unique barcodes with 158,396 records
+
+  Processing AN6 → tmsambaskk
+    Progress: 5,000/41,637 barcodes checked, 5,148 records found
+    Progress: 10,000/41,637 barcodes checked, 10,274 records found
+    Progress: 15,000/41,637 barcodes checked, 15,422 records found
+    Progress: 20,000/41,637 barcodes checked, 20,538 records found
+    Progress: 25,000/41,637 barcodes checked, 25,661 records found
+    Progress: 30,000/41,637 barcodes checked, 30,795 records found
+    Progress: 35,000/41,637 barcodes checked, 35,924 records found
+    Progress: 40,000/41,637 barcodes checked, 41,047 records found
+    Progress: 41,637/41,637 barcodes checked, 42,724 records found
+    ✓ Cached 41,637 unique barcodes with 42,724 records
+
+  Processing AN3 → tmsambasks
+    Progress: 5,000/35,229 barcodes checked, 5,115 records found
+    Progress: 10,000/35,229 barcodes checked, 10,220 records found
+    Progress: 15,000/35,229 barcodes checked, 15,318 records found
+    Progress: 20,000/35,229 barcodes checked, 20,433 records found
+    Progress: 25,000/35,229 barcodes checked, 25,551 records found
+    Progress: 30,000/35,229 barcodes checked, 30,644 records found
+    Progress: 35,000/35,229 barcodes checked, 35,776 records found
+    Progress: 35,229/35,229 barcodes checked, 36,010 records found
+    ✓ Cached 35,229 unique barcodes with 36,010 records
+
+  Processing AN4 → tmsambasmg
+    Progress: 5,000/112,391 barcodes checked, 5,098 records found
+    Progress: 10,000/112,391 barcodes checked, 10,214 records found
+    Progress: 15,000/112,391 barcodes checked, 15,317 records found
+    Progress: 20,000/112,391 barcodes checked, 20,449 records found
+    Progress: 25,000/112,391 barcodes checked, 25,550 records found
+    Progress: 30,000/112,391 barcodes checked, 30,643 records found
+    Progress: 35,000/112,391 barcodes checked, 35,752 records found
+    Progress: 40,000/112,391 barcodes checked, 40,856 records found
+    Progress: 45,000/112,391 barcodes checked, 45,960 records found
+    Progress: 50,000/112,391 barcodes checked, 51,064 records found
+    Progress: 55,000/112,391 barcodes checked, 56,151 records found
+    Progress: 60,000/112,391 barcodes checked, 61,262 records found
+    Progress: 65,000/112,391 barcodes checked, 66,361 records found
+    Progress: 70,000/112,391 barcodes checked, 71,482 records found
+    Progress: 75,000/112,391 barcodes checked, 76,590 records found
+    Progress: 80,000/112,391 barcodes checked, 81,700 records found
+    Progress: 85,000/112,391 barcodes checked, 86,805 records found
+    Progress: 90,000/112,391 barcodes checked, 91,914 records found
+    Progress: 95,000/112,391 barcodes checked, 97,010 records found
+    Progress: 100,000/112,391 barcodes checked, 102,130 records found
+    Progress: 105,000/112,391 barcodes checked, 107,246 records found
+    Progress: 110,000/112,391 barcodes checked, 112,362 records found
+    Progress: 112,391/112,391 barcodes checked, 114,807 records found
+    ✓ Cached 112,391 unique barcodes with 114,807 records
+
+  Processing AN5 → tmsambassj2
+    Progress: 5,000/34,712 barcodes checked, 5,077 records found
+    Progress: 10,000/34,712 barcodes checked, 10,152 records found
+    Progress: 15,000/34,712 barcodes checked, 15,235 records found
+    Progress: 20,000/34,712 barcodes checked, 20,328 records found
+    Progress: 25,000/34,712 barcodes checked, 25,394 records found
+    Progress: 30,000/34,712 barcodes checked, 30,460 records found
+    Progress: 34,712/34,712 barcodes checked, 35,258 records found
+    ✓ Cached 34,712 unique barcodes with 35,258 records
+
+  Processing AN2 → tmsambaskj
+    Progress: 5,000/44,330 barcodes checked, 5,120 records found
+    Progress: 10,000/44,330 barcodes checked, 10,224 records found
+    Progress: 15,000/44,330 barcodes checked, 15,312 records found
+    Progress: 20,000/44,330 barcodes checked, 20,404 records found
+    Progress: 25,000/44,330 barcodes checked, 25,480 records found
+    Progress: 30,000/44,330 barcodes checked, 30,584 records found
+    Progress: 35,000/44,330 barcodes checked, 35,686 records found
+    Progress: 40,000/44,330 barcodes checked, 40,782 records found
+    Progress: 44,330/44,330 barcodes checked, 45,209 records found
+    ✓ Cached 44,330 unique barcodes with 45,209 records
+
+  Processing AN7 → tmsambasbjg
+    Progress: 5,000/33,097 barcodes checked, 5,137 records found
+    Progress: 10,000/33,097 barcodes checked, 10,255 records found
+    Progress: 15,000/33,097 barcodes checked, 15,374 records found
+    Progress: 20,000/33,097 barcodes checked, 20,502 records found
+    Progress: 25,000/33,097 barcodes checked, 25,602 records found
+    Progress: 30,000/33,097 barcodes checked, 30,726 records found
+    Progress: 33,097/33,097 barcodes checked, 33,905 records found
+    ✓ Cached 33,097 unique barcodes with 33,905 records
+
+✓ Total cached: 466,309 records from all databases
+✓ Database connection closed
+
+[Step 3] Patching data using cache...
+============================================================
+  Processed: 1,000/464,900 records
+  Processed: 2,000/464,900 records
+  Processed: 3,000/464,900 records
+  Processed: 4,000/464,900 records
+  Processed: 5,000/464,900 records
+  Processed: 6,000/464,900 records
+  Processed: 7,000/464,900 records
+  Processed: 8,000/464,900 records
+  Processed: 9,000/464,900 records
+  Processed: 10,000/464,900 records
+  Processed: 11,000/464,900 records
+  Processed: 12,000/464,900 records
+  Processed: 13,000/464,900 records
+  Processed: 14,000/464,900 records
+  Processed: 15,000/464,900 records
+  Processed: 16,000/464,900 records
+  Processed: 17,000/464,900 records
+  Processed: 18,000/464,900 records
+  Processed: 19,000/464,900 records
+  Processed: 20,000/464,900 records
+  Processed: 21,000/464,900 records
+  Processed: 22,000/464,900 records
+  Processed: 23,000/464,900 records
+  Processed: 24,000/464,900 records
+  Processed: 25,000/464,900 records
+  Processed: 26,000/464,900 records
+  Processed: 27,000/464,900 records
+  Processed: 28,000/464,900 records
+  Processed: 29,000/464,900 records
+  Processed: 30,000/464,900 records
+  Processed: 31,000/464,900 records
+  Processed: 32,000/464,900 records
+  Processed: 33,000/464,900 records
+  Processed: 34,000/464,900 records
+  Processed: 35,000/464,900 records
+  Processed: 36,000/464,900 records
+  Processed: 37,000/464,900 records
+  Processed: 38,000/464,900 records
+  Processed: 39,000/464,900 records
+  Processed: 40,000/464,900 records
+  Processed: 41,000/464,900 records
+  Processed: 42,000/464,900 records
+  Processed: 43,000/464,900 records
+  Processed: 44,000/464,900 records
+  Processed: 45,000/464,900 records
+  Processed: 46,000/464,900 records
+  Processed: 47,000/464,900 records
+  Processed: 48,000/464,900 records
+  Processed: 49,000/464,900 records
+  Processed: 50,000/464,900 records
+  Processed: 51,000/464,900 records
+  Processed: 52,000/464,900 records
+  Processed: 53,000/464,900 records
+  Processed: 54,000/464,900 records
+  Processed: 55,000/464,900 records
+  Processed: 56,000/464,900 records
+  Processed: 57,000/464,900 records
+  Processed: 58,000/464,900 records
+  Processed: 59,000/464,900 records
+  Processed: 60,000/464,900 records
+  Processed: 61,000/464,900 records
+  Processed: 62,000/464,900 records
+  Processed: 63,000/464,900 records
+  Processed: 64,000/464,900 records
+  Processed: 65,000/464,900 records
+  Processed: 66,000/464,900 records
+  Processed: 67,000/464,900 records
+  Processed: 68,000/464,900 records
+  Processed: 69,000/464,900 records
+  Processed: 70,000/464,900 records
+  Processed: 71,000/464,900 records
+  Processed: 72,000/464,900 records
+  Processed: 73,000/464,900 records
+  Processed: 74,000/464,900 records
+  Processed: 75,000/464,900 records
+  Processed: 76,000/464,900 records
+  Processed: 77,000/464,900 records
+  Processed: 78,000/464,900 records
+  Processed: 79,000/464,900 records
+  Processed: 80,000/464,900 records
+  Processed: 81,000/464,900 records
+  Processed: 82,000/464,900 records
+  Processed: 83,000/464,900 records
+  Processed: 84,000/464,900 records
+  Processed: 85,000/464,900 records
+  Processed: 86,000/464,900 records
+  Processed: 87,000/464,900 records
+  Processed: 88,000/464,900 records
+  Processed: 89,000/464,900 records
+  Processed: 90,000/464,900 records
+  Processed: 91,000/464,900 records
+  Processed: 92,000/464,900 records
+  Processed: 93,000/464,900 records
+  Processed: 94,000/464,900 records
+  Processed: 95,000/464,900 records
+  Processed: 96,000/464,900 records
+  Processed: 97,000/464,900 records
+  Processed: 98,000/464,900 records
+  Processed: 99,000/464,900 records
+  Processed: 100,000/464,900 records
+  Processed: 101,000/464,900 records
+  Processed: 102,000/464,900 records
+  Processed: 103,000/464,900 records
+  Processed: 104,000/464,900 records
+  Processed: 105,000/464,900 records
+  Processed: 106,000/464,900 records
+  Processed: 107,000/464,900 records
+  Processed: 108,000/464,900 records
+  Processed: 109,000/464,900 records
+  Processed: 110,000/464,900 records
+  Processed: 111,000/464,900 records
+  Processed: 112,000/464,900 records
+  Processed: 113,000/464,900 records
+  Processed: 114,000/464,900 records
+  Processed: 115,000/464,900 records
+  Processed: 116,000/464,900 records
+  Processed: 117,000/464,900 records
+  Processed: 118,000/464,900 records
+  Processed: 119,000/464,900 records
+  Processed: 120,000/464,900 records
+  Processed: 121,000/464,900 records
+  Processed: 122,000/464,900 records
+  Processed: 123,000/464,900 records
+  Processed: 124,000/464,900 records
+  Processed: 125,000/464,900 records
+  Processed: 126,000/464,900 records
+  Processed: 127,000/464,900 records
+  Processed: 128,000/464,900 records
+  Processed: 129,000/464,900 records
+  Processed: 130,000/464,900 records
+  Processed: 131,000/464,900 records
+  Processed: 132,000/464,900 records
+  Processed: 133,000/464,900 records
+  Processed: 134,000/464,900 records
+  Processed: 135,000/464,900 records
+  Processed: 136,000/464,900 records
+  Processed: 137,000/464,900 records
+  Processed: 138,000/464,900 records
+  Processed: 139,000/464,900 records
+  Processed: 140,000/464,900 records
+  Processed: 141,000/464,900 records
+  Processed: 142,000/464,900 records
+  Processed: 143,000/464,900 records
+  Processed: 144,000/464,900 records
+  Processed: 145,000/464,900 records
+  Processed: 146,000/464,900 records
+  Processed: 147,000/464,900 records
+  Processed: 148,000/464,900 records
+  Processed: 149,000/464,900 records
+  Processed: 150,000/464,900 records
+  Processed: 151,000/464,900 records
+  Processed: 152,000/464,900 records
+  Processed: 153,000/464,900 records
+  Processed: 154,000/464,900 records
+  Processed: 155,000/464,900 records
+  Processed: 156,000/464,900 records
+  Processed: 157,000/464,900 records
+  Processed: 158,000/464,900 records
+  Processed: 159,000/464,900 records
+  Processed: 160,000/464,900 records
+  Processed: 161,000/464,900 records
+  Processed: 162,000/464,900 records
+  Processed: 163,000/464,900 records
+  Processed: 164,000/464,900 records
+  Processed: 165,000/464,900 records
+  Processed: 166,000/464,900 records
+  Processed: 167,000/464,900 records
+  Processed: 168,000/464,900 records
+  Processed: 169,000/464,900 records
+  Processed: 170,000/464,900 records
+  Processed: 171,000/464,900 records
+  Processed: 172,000/464,900 records
+  Processed: 173,000/464,900 records
+  Processed: 174,000/464,900 records
+  Processed: 175,000/464,900 records
+  Processed: 176,000/464,900 records
+  Processed: 177,000/464,900 records
+  Processed: 178,000/464,900 records
+  Processed: 179,000/464,900 records
+  Processed: 180,000/464,900 records
+  Processed: 181,000/464,900 records
+  Processed: 182,000/464,900 records
+  Processed: 183,000/464,900 records
+  Processed: 184,000/464,900 records
+  Processed: 185,000/464,900 records
+  Processed: 186,000/464,900 records
+  Processed: 187,000/464,900 records
+  Processed: 188,000/464,900 records
+  Processed: 189,000/464,900 records
+  Processed: 190,000/464,900 records
+  Processed: 191,000/464,900 records
+  Processed: 192,000/464,900 records
+  Processed: 193,000/464,900 records
+  Processed: 194,000/464,900 records
+  Processed: 195,000/464,900 records
+  Processed: 196,000/464,900 records
+  Processed: 197,000/464,900 records
+  Processed: 198,000/464,900 records
+  Processed: 199,000/464,900 records
+  Processed: 200,000/464,900 records
+  Processed: 201,000/464,900 records
+  Processed: 202,000/464,900 records
+  Processed: 203,000/464,900 records
+  Processed: 204,000/464,900 records
+  Processed: 205,000/464,900 records
+  Processed: 206,000/464,900 records
+  Processed: 207,000/464,900 records
+  Processed: 208,000/464,900 records
+  Processed: 209,000/464,900 records
+  Processed: 210,000/464,900 records
+  Processed: 211,000/464,900 records
+  Processed: 212,000/464,900 records
+  Processed: 213,000/464,900 records
+  Processed: 214,000/464,900 records
+  Processed: 215,000/464,900 records
+  Processed: 216,000/464,900 records
+  Processed: 217,000/464,900 records
+  Processed: 218,000/464,900 records
+  Processed: 219,000/464,900 records
+  Processed: 220,000/464,900 records
+  Processed: 221,000/464,900 records
+  Processed: 222,000/464,900 records
+  Processed: 223,000/464,900 records
+  Processed: 224,000/464,900 records
+  Processed: 225,000/464,900 records
+  Processed: 226,000/464,900 records
+  Processed: 227,000/464,900 records
+  Processed: 228,000/464,900 records
+  Processed: 229,000/464,900 records
+  Processed: 230,000/464,900 records
+  Processed: 231,000/464,900 records
+  Processed: 232,000/464,900 records
+  Processed: 233,000/464,900 records
+  Processed: 234,000/464,900 records
+  Processed: 235,000/464,900 records
+  Processed: 236,000/464,900 records
+  Processed: 237,000/464,900 records
+  Processed: 238,000/464,900 records
+  Processed: 239,000/464,900 records
+  Processed: 240,000/464,900 records
+  Processed: 241,000/464,900 records
+  Processed: 242,000/464,900 records
+  Processed: 243,000/464,900 records
+  Processed: 244,000/464,900 records
+  Processed: 245,000/464,900 records
+  Processed: 246,000/464,900 records
+  Processed: 247,000/464,900 records
+  Processed: 248,000/464,900 records
+  Processed: 249,000/464,900 records
+  Processed: 250,000/464,900 records
+  Processed: 251,000/464,900 records
+  Processed: 252,000/464,900 records
+  Processed: 253,000/464,900 records
+  Processed: 254,000/464,900 records
+  Processed: 255,000/464,900 records
+  Processed: 256,000/464,900 records
+  Processed: 257,000/464,900 records
+  Processed: 258,000/464,900 records
+  Processed: 259,000/464,900 records
+  Processed: 260,000/464,900 records
+  Processed: 261,000/464,900 records
+  Processed: 262,000/464,900 records
+  Processed: 263,000/464,900 records
+  Processed: 264,000/464,900 records
+  Processed: 265,000/464,900 records
+  Processed: 266,000/464,900 records
+  Processed: 267,000/464,900 records
+  Processed: 268,000/464,900 records
+  Processed: 269,000/464,900 records
+  Processed: 270,000/464,900 records
+  Processed: 271,000/464,900 records
+  Processed: 272,000/464,900 records
+  Processed: 273,000/464,900 records
+  Processed: 274,000/464,900 records
+  Processed: 275,000/464,900 records
+  Processed: 276,000/464,900 records
+  Processed: 277,000/464,900 records
+  Processed: 278,000/464,900 records
+  Processed: 279,000/464,900 records
+  Processed: 280,000/464,900 records
+  Processed: 281,000/464,900 records
+  Processed: 282,000/464,900 records
+  Processed: 283,000/464,900 records
+  Processed: 284,000/464,900 records
+  Processed: 285,000/464,900 records
+  Processed: 286,000/464,900 records
+  Processed: 287,000/464,900 records
+  Processed: 288,000/464,900 records
+  Processed: 289,000/464,900 records
+  Processed: 290,000/464,900 records
+  Processed: 291,000/464,900 records
+  Processed: 292,000/464,900 records
+  Processed: 293,000/464,900 records
+  Processed: 294,000/464,900 records
+  Processed: 295,000/464,900 records
+  Processed: 296,000/464,900 records
+  Processed: 297,000/464,900 records
+  Processed: 298,000/464,900 records
+  Processed: 299,000/464,900 records
+  Processed: 300,000/464,900 records
+  Processed: 301,000/464,900 records
+  Processed: 302,000/464,900 records
+  Processed: 303,000/464,900 records
+  Processed: 304,000/464,900 records
+  Processed: 305,000/464,900 records
+  Processed: 306,000/464,900 records
+  Processed: 307,000/464,900 records
+  Processed: 308,000/464,900 records
+  Processed: 309,000/464,900 records
+  Processed: 310,000/464,900 records
+  Processed: 311,000/464,900 records
+  Processed: 312,000/464,900 records
+  Processed: 313,000/464,900 records
+  Processed: 314,000/464,900 records
+  Processed: 315,000/464,900 records
+  Processed: 316,000/464,900 records
+  Processed: 317,000/464,900 records
+  Processed: 318,000/464,900 records
+  Processed: 319,000/464,900 records
+  Processed: 320,000/464,900 records
+  Processed: 321,000/464,900 records
+  Processed: 322,000/464,900 records
+  Processed: 323,000/464,900 records
+  Processed: 324,000/464,900 records
+  Processed: 325,000/464,900 records
+  Processed: 326,000/464,900 records
+  Processed: 327,000/464,900 records
+  Processed: 328,000/464,900 records
+  Processed: 329,000/464,900 records
+  Processed: 330,000/464,900 records
+  Processed: 331,000/464,900 records
+  Processed: 332,000/464,900 records
+  Processed: 333,000/464,900 records
+  Processed: 334,000/464,900 records
+  Processed: 335,000/464,900 records
+  Processed: 336,000/464,900 records
+  Processed: 337,000/464,900 records
+  Processed: 338,000/464,900 records
+  Processed: 339,000/464,900 records
+  Processed: 340,000/464,900 records
+  Processed: 341,000/464,900 records
+  Processed: 342,000/464,900 records
+  Processed: 343,000/464,900 records
+  Processed: 344,000/464,900 records
+  Processed: 345,000/464,900 records
+  Processed: 346,000/464,900 records
+  Processed: 347,000/464,900 records
+  Processed: 348,000/464,900 records
+  Processed: 349,000/464,900 records
+  Processed: 350,000/464,900 records
+  Processed: 351,000/464,900 records
+  Processed: 352,000/464,900 records
+  Processed: 353,000/464,900 records
+  Processed: 354,000/464,900 records
+  Processed: 355,000/464,900 records
+  Processed: 356,000/464,900 records
+  Processed: 357,000/464,900 records
+  Processed: 358,000/464,900 records
+  Processed: 359,000/464,900 records
+  Processed: 360,000/464,900 records
+  Processed: 361,000/464,900 records
+  Processed: 362,000/464,900 records
+  Processed: 363,000/464,900 records
+  Processed: 364,000/464,900 records
+  Processed: 365,000/464,900 records
+  Processed: 366,000/464,900 records
+  Processed: 367,000/464,900 records
+  Processed: 368,000/464,900 records
+  Processed: 369,000/464,900 records
+  Processed: 370,000/464,900 records
+  Processed: 371,000/464,900 records
+  Processed: 372,000/464,900 records
+  Processed: 373,000/464,900 records
+  Processed: 374,000/464,900 records
+  Processed: 375,000/464,900 records
+  Processed: 376,000/464,900 records
+  Processed: 377,000/464,900 records
+  Processed: 378,000/464,900 records
+  Processed: 379,000/464,900 records
+  Processed: 380,000/464,900 records
+  Processed: 381,000/464,900 records
+  Processed: 382,000/464,900 records
+  Processed: 383,000/464,900 records
+  Processed: 384,000/464,900 records
+  Processed: 385,000/464,900 records
+  Processed: 386,000/464,900 records
+  Processed: 387,000/464,900 records
+  Processed: 388,000/464,900 records
+  Processed: 389,000/464,900 records
+  Processed: 390,000/464,900 records
+  Processed: 391,000/464,900 records
+  Processed: 392,000/464,900 records
+  Processed: 393,000/464,900 records
+  Processed: 394,000/464,900 records
+  Processed: 395,000/464,900 records
+  Processed: 396,000/464,900 records
+  Processed: 397,000/464,900 records
+  Processed: 398,000/464,900 records
+  Processed: 399,000/464,900 records
+  Processed: 400,000/464,900 records
+  Processed: 401,000/464,900 records
+  Processed: 402,000/464,900 records
+  Processed: 403,000/464,900 records
+  Processed: 404,000/464,900 records
+  Processed: 405,000/464,900 records
+  Processed: 406,000/464,900 records
+  Processed: 407,000/464,900 records
+  Processed: 408,000/464,900 records
+  Processed: 409,000/464,900 records
+  Processed: 410,000/464,900 records
+  Processed: 411,000/464,900 records
+  Processed: 412,000/464,900 records
+  Processed: 413,000/464,900 records
+  Processed: 414,000/464,900 records
+  Processed: 415,000/464,900 records
+  Processed: 416,000/464,900 records
+  Processed: 417,000/464,900 records
+  Processed: 418,000/464,900 records
+  Processed: 419,000/464,900 records
+  Processed: 420,000/464,900 records
+  Processed: 421,000/464,900 records
+  Processed: 422,000/464,900 records
+  Processed: 423,000/464,900 records
+  Processed: 424,000/464,900 records
+  Processed: 425,000/464,900 records
+  Processed: 426,000/464,900 records
+  Processed: 427,000/464,900 records
+  Processed: 428,000/464,900 records
+  Processed: 429,000/464,900 records
+  Processed: 430,000/464,900 records
+  Processed: 431,000/464,900 recordsTraceback (most recent call last):
+  File "/Users/macbookair12/Downloads/script tt member/patch_no_faktur_ultra_fast.py", line 272, in <module>
+    patch_no_faktur_ultra_fast()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/macbookair12/Downloads/script tt member/patch_no_faktur_ultra_fast.py", line 239, in patch_no_faktur_ultra_fast
+    json.dump(data, f, indent=2, ensure_ascii=False)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 180, in dump
+    fp.write(chunk)
+    ~~~~~~~~^^^^^^^
+OSError: [Errno 28] No space left on device
+
+  Processed: 432,000/464,900 records
+  Processed: 433,000/464,900 records
+  Processed: 434,000/464,900 records
+  Processed: 435,000/464,900 records
+  Processed: 436,000/464,900 records
+  Processed: 437,000/464,900 records
+  Processed: 438,000/464,900 records
+  Processed: 439,000/464,900 records
+  Processed: 440,000/464,900 records
+  Processed: 441,000/464,900 records
+  Processed: 442,000/464,900 records
+  Processed: 443,000/464,900 records
+  Processed: 444,000/464,900 records
+  Processed: 445,000/464,900 records
+  Processed: 446,000/464,900 records
+  Processed: 447,000/464,900 records
+  Processed: 448,000/464,900 records
+  Processed: 449,000/464,900 records
+  Processed: 450,000/464,900 records
+  Processed: 451,000/464,900 records
+  Processed: 452,000/464,900 records
+  Processed: 453,000/464,900 records
+  Processed: 454,000/464,900 records
+  Processed: 455,000/464,900 records
+  Processed: 456,000/464,900 records
+  Processed: 457,000/464,900 records
+  Processed: 458,000/464,900 records
+  Processed: 459,000/464,900 records
+  Processed: 460,000/464,900 records
+  Processed: 461,000/464,900 records
+  Processed: 462,000/464,900 records
+  Processed: 463,000/464,900 records
+  Processed: 464,000/464,900 records
+
+[Step 4] Saving to tmsambassg.tt_member_FINAL_COMPLETE.json...
+
+✗ Error: [Errno 28] No space left on device

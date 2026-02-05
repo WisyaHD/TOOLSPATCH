@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TT Member Patching Tool - Database Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #666;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        label .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select, 
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus, 
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .status-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .status-success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .config-status {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .config-status.connected {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+
+        .config-status.disconnected {
+            background: #fff3e0;
+            color: #f57c00;
+            border-left: 4px solid #f57c00;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e1e4e8;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .db-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .db-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .db-item-code {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .db-item-name {
+            color: #555;
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .download-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .download-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .download-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .download-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 14px;
+        }
+
+        .download-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-patch {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-transform {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .badge-patch_no_faktur {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ TT Member Patching Tool</h1>
+            <p class="subtitle">Configure databases and process TT Member data with ease</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('config')">🔧 Database Configuration</button>
+            <button class="tab" onclick="switchTab('process')">🚀 Data Processing</button>
+        </div>
+
+        <!-- Configuration Tab -->
+        <div id="config-tab" class="tab-content active">
+            <div class="main-content">
+                <!-- MongoDB Configuration -->
+                <div class="card">
+                    <h2><span class="icon">🗄️</span> MongoDB Configuration</h2>
+                    <div class="form-group">
+                        <label for="mongodb-uri">MongoDB URI <span class="required">*</span></label>
+                        <input type="text" id="mongodb-uri" placeholder="mongodb://localhost:27017/" value="mongodb://localhost:27017/">
+                        <div class="input-hint">Format: mongodb://[username:password@]host:port/</div>
+                    </div>
+                    <button class="btn btn-success" onclick="testConnection()">
+                        <span>🔌</span> Test Connection
+                    </button>
+                    <div id="connection-status" class="config-status disconnected" style="display: none;">
+                        Not connected
+                    </div>
+                </div>
+
+                <!-- Database Member Configuration -->
+                <div class="card">
+                    <h2><span class="icon">👥</span> Database Member</h2>
+                    <div class="form-group">
+                        <label for="db-member">Database Name <span class="required">*</span></label>
+                        <input type="text" id="db-member" placeholder="db_hdpayn_asli" value="db_hdpayn_asli">
+                        <div class="input-hint">Database yang berisi data member</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collection-member">Collection Name <span class="required">*</span></label>
+                        <input type="text" id="collection-member" placeholder="tt_member" value="tt_member">
+                        <div class="input-hint">Collection tt_member</div>
+                    </div>
+                </div>
+
+                <!-- Database Jual Configuration -->
+                <div class="card">
+                    <h2><span class="icon">🛒</span> Database Jual (Multiple Branches)</h2>
+                    <div class="form-group">
+                        <label for="db-jual">Default Database Name <span class="required">*</span></label>
+                        <input type="text" id="db-jual" placeholder="tmsambassg" value="tmsambassg">
+                        <div class="input-hint">Database default untuk penjualan</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collection-jual">Collection Name <span class="required">*</span></label>
+                        <input type="text" id="collection-jual" placeholder="tt_jual_detail" value="tt_jual_detail">
+                        <div class="input-hint">Collection tt_jual_detail</div>
+                    </div>
+                    
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #e1e4e8;">
+                    
+                    <div class="form-group">
+                        <label>Database Per Cabang/Toko</label>
+                        <div class="input-hint" style="margin-bottom: 10px;">Tambahkan database untuk setiap kode toko (AN1, AN2, AN3, dll)</div>
+                        <div id="db-jual-list" style="margin-bottom: 10px;">
+                            <!-- List will be populated here -->
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="new-kode-toko" placeholder="Kode Toko (AN1, AN2, etc)" style="flex: 1;">
+                            <input type="text" id="new-db-jual-name" placeholder="Database Name" style="flex: 2;">
+                            <button type="button" class="btn btn-success" onclick="addDatabaseJual()" style="flex: 0 0 auto; width: auto; padding: 12px 20px;">
+                                <span>➕</span> Tambah
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Beli Configuration -->
+                <div class="card">
+                    <h2><span class="icon">📦</span> Database Beli</h2>
+                    <div class="form-group">
+                        <label for="db-beli">Database Name <span class="required">*</span></label>
+                        <input type="text" id="db-beli" placeholder="db_hdpayn_asli" value="db_hdpayn_asli">
+                        <div class="input-hint">Database yang berisi data pembelian</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collection-beli">Collection Name <span class="required">*</span></label>
+                        <input type="text" id="collection-beli" placeholder="tt_beli_detail" value="tt_beli_detail">
+                        <div class="input-hint">Collection tt_beli_detail</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collection-hutang">Collection Hutang <span class="required">*</span></label>
+                        <input type="text" id="collection-hutang" placeholder="tt_hutang_detail" value="tt_hutang_detail">
+                        <div class="input-hint">Collection tt_hutang_detail</div>
+                    </div>
+                </div>
+
+                <!-- Save Configuration -->
+                <div class="card full-width">
+                    <h2><span class="icon">💾</span> Save Configuration</h2>
+                    <button class="btn btn-primary" onclick="saveConfig()">
+                        <span>💾</span> Save Database Configuration
+                    </button>
+                    <div id="save-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Tab -->
+        <div id="process-tab" class="tab-content">
+            <div class="main-content">
+                <!-- Patch Card -->
+                <div class="card">
+                    <h2><span class="icon">🔧</span> Patch Data</h2>
+                    <div class="form-group">
+                        <label for="patch-file">Select JSON File:</label>
+                        <input type="file" id="patch-file" class="file-input" accept=".json" />
+                        <small style="display: block; margin-top: 8px; color: #999;">atau pilih dari server:</small>
+                        <select id="patch-file-select" class="file-select" style="margin-top: 8px;">
+                            <option value="">-- Select File --</option>
+                            {% for file in json_files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="runPatch()">
+                        <span>🚀</span> Start Patch Process
+                    </button>
+                </div>
+
+                <!-- Transform Card -->
+                <div class="card">
+                    <h2><span class="icon">🔄</span> Transform Structure</h2>
+                    <div class="form-group">
+                        <label for="transform-file">Select JSON File:</label>
+                        <input type="file" id="transform-file" class="file-input" accept=".json" />
+                        <small style="display: block; margin-top: 8px; color: #999;">atau pilih dari server:</small>
+                        <select id="transform-file-select" class="file-select" style="margin-top: 8px;">
+                            <option value="">-- Select File --</option>
+                            {% for file in json_files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="runTransform()">
+                        <span>✨</span> Start Transform
+                    </button>
+                </div>
+
+                <!-- Patch No Faktur Card -->
+                <div class="card">
+                    <h2><span class="icon">🎯</span> Patch No Faktur</h2>
+                    <p style="font-size: 13px; color: #999; margin-bottom: 15px;">
+                        Lookup kode_barcode ke database dan isi no_faktur, nama_barang
+                    </p>
+                    <div class="form-group">
+                        <label for="patch-no-faktur-file">Select JSON File:</label>
+                        <input type="file" id="patch-no-faktur-file" class="file-input" accept=".json" />
+                        <small style="display: block; margin-top: 8px; color: #999;">atau pilih dari server:</small>
+                        <select id="patch-no-faktur-file-select" class="file-select" style="margin-top: 8px;">
+                            <option value="">-- Select File --</option>
+                            {% for file in json_files %}
+                            {% if 'transformed' in file %}
+                            <option value="{{ file }}">{{ file }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="runPatchNoFaktur()">
+                        <span>🎯</span> Patch No Faktur
+                    </button>
+                </div>
+
+                <!-- Status Card -->
+                <div class="card full-width">
+                    <h2><span class="icon">📊</span> Processing Status</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div id="status-message" style="text-align: center; color: #999;">
+                        Ready to process
+                    </div>
+                </div>
+
+                <!-- Download Table -->
+                <div class="card full-width">
+                    <h2><span class="icon">📥</span> Download Hasil Patch</h2>
+                    <div id="download-table-container">
+                        <table class="download-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama File</th>
+                                    <th>Tipe</th>
+                                    <th>Waktu</th>
+                                    <th>Ukuran</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="download-table-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #999; padding: 20px;">
+                                        Belum ada file yang diproses
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
+
