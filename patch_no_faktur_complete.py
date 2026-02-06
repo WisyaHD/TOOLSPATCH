@@ -79,17 +79,29 @@ def patch_no_faktur_complete(input_file=None, output_file=None):
     print("\n[Step 3] Building cache from tt_jual_detail...")
     jual_cache = defaultdict(lambda: defaultdict(dict))  # {kode_toko: {kode_barcode: {...}}}
     batch_size = 1000
+
+    def resolve_barcode(member, trans):
+        """Resolve kode_barcode from transaction or fallback to member deskripsi."""
+        kode_barcode = trans.get('kode_barcode') if isinstance(trans, dict) else None
+        if kode_barcode and kode_barcode != '-':
+            return kode_barcode
+
+        deskripsi = member.get('deskripsi')
+        if deskripsi and deskripsi != '-' and '-' not in deskripsi:
+            return deskripsi
+
+        return None
     
     # Collect semua unique kode_barcode per kode_toko
     print("  Collecting kode_barcode per kode_toko...")
     barcode_by_toko = defaultdict(set)
     
     for member in data:
-        kode_toko = member.get('kode_toko', '')
+        kode_toko = (member.get('kode_toko', '') or '').upper()
         if 'information_transaction' in member and member['information_transaction']:
             for trans in member['information_transaction']:
-                kode_barcode = trans.get('kode_barcode')
-                if kode_barcode and kode_barcode != '-':
+                kode_barcode = resolve_barcode(member, trans)
+                if kode_barcode:
                     barcode_by_toko[kode_toko].add(kode_barcode)
     
     total_to_lookup = sum(len(barcodes) for barcodes in barcode_by_toko.values())
@@ -123,6 +135,7 @@ def patch_no_faktur_complete(input_file=None, output_file=None):
                 {"kode_barcode": {"$in": batch}},
                 {
                     "kode_barcode": 1,
+                    "no_faktur": 1,
                     "no_faktur_jual": 1,
                     "nama_barang": 1,
                     "berat": 1,
@@ -133,10 +146,11 @@ def patch_no_faktur_complete(input_file=None, output_file=None):
             for doc in results:
                 kode_barcode = doc.get('kode_barcode')
                 if kode_barcode:
+                    no_faktur_value = doc.get('no_faktur_jual') or doc.get('no_faktur') or '-'
                     # Simpan data - ambil yang pertama jika ada duplikat
                     if kode_barcode not in jual_cache[kode_toko]:
                         jual_cache[kode_toko][kode_barcode] = {
-                            'no_faktur_jual': doc.get('no_faktur_jual', '-'),
+                            'no_faktur_jual': no_faktur_value,
                             'nama_barang': doc.get('nama_barang', '-'),
                             'berat': doc.get('berat', 0)
                         }
@@ -164,14 +178,18 @@ def patch_no_faktur_complete(input_file=None, output_file=None):
     }
     
     for idx, member in enumerate(data):
-        kode_toko = member.get('kode_toko', '')
+        kode_toko = (member.get('kode_toko', '') or '').upper()
         
         if 'information_transaction' in member and member['information_transaction']:
             for trans in member['information_transaction']:
-                kode_barcode = trans.get('kode_barcode')
-                
-                if not kode_barcode or kode_barcode == '-':
+                kode_barcode = resolve_barcode(member, trans)
+
+                if not kode_barcode:
                     continue
+
+                # Normalize transaction kode_barcode if missing
+                if isinstance(trans, dict) and (not trans.get('kode_barcode') or trans.get('kode_barcode') == '-'):
+                    trans['kode_barcode'] = kode_barcode
                 
                 # Check cache
                 if kode_toko in jual_cache and kode_barcode in jual_cache[kode_toko]:

@@ -91,7 +91,26 @@ def transform_member_structure(old_member):
     """
     # Cek apakah data sudah dalam format baru (punya information_transaction)
     if "information_transaction" in old_member and old_member.get("information_transaction"):
-        # Data sudah dalam format baru, return as is
+        # Data sudah dalam format baru, pastikan semua field transaction lengkap
+        info_trans = old_member.get("information_transaction", [])
+        if isinstance(info_trans, list):
+            for trans in info_trans:
+                if not isinstance(trans, dict):
+                    continue
+                trans.setdefault("nama_barang", old_member.get("nama_barang", "-"))
+                trans.setdefault("nama_atribut", "-")
+                trans.setdefault("no_faktur", old_member.get("no_faktur_jual", "-"))
+                trans.setdefault("berat", old_member.get("berat", 0))
+                trans.setdefault("kadar", 0)
+                trans.setdefault("kadar_cetak", "-")
+                trans.setdefault("kadar_modal", 0)
+                trans.setdefault("kode_barcode", old_member.get("deskripsi", "-"))
+                trans.setdefault("kode_dept", "-")
+                trans.setdefault("kode_group", "-")
+                trans.setdefault("harga", int(old_member.get("jumlah_rp", 0)) if old_member.get("jumlah_rp") else 0)
+                trans.setdefault("no_faktur_jual", old_member.get("no_faktur_jual", "-"))
+                trans.setdefault("lookup_source", "-")
+                trans.setdefault("lookup_db", "-")
         return old_member
     
     # Extract data dari struktur lama

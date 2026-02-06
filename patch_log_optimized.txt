@@ -1,0 +1,79 @@
+
+🚀 Starting OPTIMIZED patch (batch_size=2000)...
+
+============================================================
+CONFIGURATION
+============================================================
+MongoDB URI: mongodb://nsi:CPJQhiZ8x8k5@10.... (hidden)
+DB Member: db_kgpst1957
+DB Jual: db_kgpst1957
+DB Beli: db_kgpst1957
+Collection tt_member: db_kgpst1957
+Collection tt_jual_detail: tt_jual_detail
+Collection tt_beli_detail: tt_beli_detail
+Collection tt_hutang_detail: tt_hutang_detail
+============================================================
+
+[Step 1] Loading uploads/sambas_pwj_pst.tt_member_transformed_4.json...
+✓ Loaded 423,471 records (405.02 MB)
+
+[Step 2] Connecting to MongoDB...
+  ✓ AN1 → tmsambassg
+  ✓ AN2 → tmsambaskj
+  ✓ AN3 → tmsambasks
+  ✓ AN4 → tmsambasmg
+  ✓ AN5 → tmsambassj2
+  ✓ AN6 → tmsambaskk
+  ✓ AN7 → tmsambasbjg
+  ✓ SBP → sambas_pwj_cb1
+✓ Connected
+
+[Step 3] Collecting barcodes per toko...
+✓ Found 322,913 transactions need patching
+✓ Unique barcodes: 322,606 across 4 toko
+
+[Step 4] Building cache (large batch queries)...
+  SBP (sambas_pwj_cb1)...
+    → 218,162 records cached
+  ⚠ SBS: No database
+  ⚠ SPW: No database
+  ⚠ SWT: No database
+
+✓ Total cached: 218,162
+
+[Step 5] Patching data...
+============================================================
+  11.8% - Processed 50,000/423,471
+  23.6% - Processed 100,000/423,471
+  35.4% - Processed 150,000/423,471
+  47.2% - Processed 200,000/423,471
+  59.0% - Processed 250,000/423,471
+  70.8% - Processed 300,000/423,471
+  82.7% - Processed 350,000/423,471
+  94.5% - Processed 400,000/423,471
+
+[Step 6] Saving output...
+✓ Saved to uploads/sambas_pwj_pst.tt_member_transformed_4_no_faktur_OPTIMIZED.json
+
+============================================================
+OPTIMIZED PATCH - SUMMARY
+============================================================
+
+Input: uploads/sambas_pwj_pst.tt_member_transformed_4.json (405.02 MB)
+Records: 423,471
+
+✓ No_Faktur patched: 218,366
+  - Nama_barang also updated: 218,366
+  - By toko: {'SBP': 218366}
+
+✗ Not patched:
+  - Already filled: 100,558
+  - No barcode: 0
+  - Not found in db: 104,547
+
+📊 Coverage: 67.6% (218,366/322,913)
+============================================================
+
+✓ Output: uploads/sambas_pwj_pst.tt_member_transformed_4_no_faktur_OPTIMIZED.json
+
+✅ SUCCESS!

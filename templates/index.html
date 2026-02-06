@@ -438,31 +438,45 @@
                 <!-- Database Member Configuration -->
                 <div class="card">
                     <h2><span class="icon">👥</span> Database Member</h2>
-                    <div class="form-group">
+                    <div class="form-group" id="db-member-wrapper" style="display: none;">
                         <label for="db-member">Database Name <span class="required">*</span></label>
-                        <input type="text" id="db-member" placeholder="db_hdpayn_asli" value="db_hdpayn_asli">
+                        <input type="text" id="db-member-search" class="file-input" placeholder="Search database..." style="margin-bottom: 8px;">
+                        <select id="db-member" class="file-select">
+                            <option value="">-- Select Database --</option>
+                        </select>
                         <div class="input-hint">Database yang berisi data member</div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="collection-member-wrapper" style="display: none;">
                         <label for="collection-member">Collection Name <span class="required">*</span></label>
-                        <input type="text" id="collection-member" placeholder="tt_member" value="tt_member">
+                        <input type="text" id="collection-member-search" class="file-input" placeholder="Search collection..." style="margin-bottom: 8px;">
+                        <select id="collection-member" class="file-select">
+                            <option value="">-- Select Collection --</option>
+                        </select>
                         <div class="input-hint">Collection tt_member</div>
                     </div>
+                    <div class="input-hint" id="db-member-hint">Klik Test Connection untuk memunculkan dropdown database & collection.</div>
                 </div>
 
                 <!-- Database Jual Configuration -->
                 <div class="card">
                     <h2><span class="icon">🛒</span> Database Jual (Multiple Branches)</h2>
-                    <div class="form-group">
+                    <div class="form-group" id="db-jual-wrapper" style="display: none;">
                         <label for="db-jual">Default Database Name <span class="required">*</span></label>
-                        <input type="text" id="db-jual" placeholder="tmsambassg" value="tmsambassg">
+                        <input type="text" id="db-jual-search" class="file-input" placeholder="Search database..." style="margin-bottom: 8px;">
+                        <select id="db-jual" class="file-select">
+                            <option value="">-- Select Database --</option>
+                        </select>
                         <div class="input-hint">Database default untuk penjualan</div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="collection-jual-wrapper" style="display: none;">
                         <label for="collection-jual">Collection Name <span class="required">*</span></label>
-                        <input type="text" id="collection-jual" placeholder="tt_jual_detail" value="tt_jual_detail">
+                        <input type="text" id="collection-jual-search" class="file-input" placeholder="Search collection..." style="margin-bottom: 8px;">
+                        <select id="collection-jual" class="file-select">
+                            <option value="">-- Select Collection --</option>
+                        </select>
                         <div class="input-hint">Collection tt_jual_detail</div>
                     </div>
+                    <div class="input-hint" id="db-jual-hint">Klik Test Connection untuk memunculkan dropdown database & collection.</div>
                     
                     <hr style="margin: 20px 0; border: none; border-top: 1px solid #e1e4e8;">
                     
@@ -485,21 +499,31 @@
                 <!-- Database Beli Configuration -->
                 <div class="card">
                     <h2><span class="icon">📦</span> Database Beli</h2>
-                    <div class="form-group">
+                    <div class="form-group" id="db-beli-wrapper" style="display: none;">
                         <label for="db-beli">Database Name <span class="required">*</span></label>
-                        <input type="text" id="db-beli" placeholder="db_hdpayn_asli" value="db_hdpayn_asli">
+                        <input type="text" id="db-beli-search" class="file-input" placeholder="Search database..." style="margin-bottom: 8px;">
+                        <select id="db-beli" class="file-select">
+                            <option value="">-- Select Database --</option>
+                        </select>
                         <div class="input-hint">Database yang berisi data pembelian</div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="collection-beli-wrapper" style="display: none;">
                         <label for="collection-beli">Collection Name <span class="required">*</span></label>
-                        <input type="text" id="collection-beli" placeholder="tt_beli_detail" value="tt_beli_detail">
+                        <input type="text" id="collection-beli-search" class="file-input" placeholder="Search collection..." style="margin-bottom: 8px;">
+                        <select id="collection-beli" class="file-select">
+                            <option value="">-- Select Collection --</option>
+                        </select>
                         <div class="input-hint">Collection tt_beli_detail</div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="collection-hutang-wrapper" style="display: none;">
                         <label for="collection-hutang">Collection Hutang <span class="required">*</span></label>
-                        <input type="text" id="collection-hutang" placeholder="tt_hutang_detail" value="tt_hutang_detail">
+                        <input type="text" id="collection-hutang-search" class="file-input" placeholder="Search collection..." style="margin-bottom: 8px;">
+                        <select id="collection-hutang" class="file-select">
+                            <option value="">-- Select Collection --</option>
+                        </select>
                         <div class="input-hint">Collection tt_hutang_detail</div>
                     </div>
+                    <div class="input-hint" id="db-beli-hint">Klik Test Connection untuk memunculkan dropdown database & collection.</div>
                 </div>
 
                 <!-- Save Configuration -->
@@ -516,25 +540,6 @@
         <!-- Processing Tab -->
         <div id="process-tab" class="tab-content">
             <div class="main-content">
-                <!-- Patch Card -->
-                <div class="card">
-                    <h2><span class="icon">🔧</span> Patch Data</h2>
-                    <div class="form-group">
-                        <label for="patch-file">Select JSON File:</label>
-                        <input type="file" id="patch-file" class="file-input" accept=".json" />
-                        <small style="display: block; margin-top: 8px; color: #999;">atau pilih dari server:</small>
-                        <select id="patch-file-select" class="file-select" style="margin-top: 8px;">
-                            <option value="">-- Select File --</option>
-                            {% for file in json_files %}
-                            <option value="{{ file }}">{{ file }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" onclick="runPatch()">
-                        <span>🚀</span> Start Patch Process
-                    </button>
-                </div>
-
                 <!-- Transform Card -->
                 <div class="card">
                     <h2><span class="icon">🔄</span> Transform Structure</h2>
@@ -573,9 +578,12 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button class="btn btn-success" onclick="runPatchNoFaktur()">
-                        <span>🎯</span> Patch No Faktur
+                    <button class="btn btn-success" onclick="runPatchNoFakturOptimized()" style="width: 100%;">
+                        <span>🎯</span> Patch No Faktur (Auto-detect DB from Config)
                     </button>
+                    <p style="margin-top: 10px; font-size: 12px; color: #666; text-align: center;">
+                        ℹ️ Database mapping otomatis dari konfigurasi Anda
+                    </p>
                 </div>
 
                 <!-- Status Card -->
@@ -586,6 +594,11 @@
                     </div>
                     <div id="status-message" style="text-align: center; color: #999;">
                         Ready to process
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-danger" onclick="resetStatus()" style="padding: 8px 16px; font-size: 12px;">
+                            🔄 Reset Status (if stuck)
+                        </button>
                     </div>
                 </div>
 

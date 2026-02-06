@@ -24,10 +24,13 @@ os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 processing_status = {
     'is_processing': False,
     'progress': 0,
-    'message': '',
+    'message': 'Ready',
     'output_file': None,
     'error': None
 }
+
+# Force reset status on startup
+processing_status['is_processing'] = False
 
 # Track processed files history
 processed_files = []
@@ -500,6 +503,37 @@ def test_connection():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/list-collections', methods=['POST'])
+def list_collections():
+    """List collections for a given database"""
+    try:
+        data = request.json
+        mongodb_uri = data.get('mongodb_uri', '')
+        db_name = data.get('db_name', '')
+
+        if not mongodb_uri or not db_name:
+            return jsonify({'success': False, 'error': 'MongoDB URI and database name are required'}), 400
+
+        from pymongo import MongoClient
+
+        client = MongoClient(
+            mongodb_uri,
+            serverSelectionTimeoutMS=30000,
+            connectTimeoutMS=20000,
+            socketTimeoutMS=120000
+        )
+
+        collections = client[db_name].list_collection_names()
+        client.close()
+
+        return jsonify({
+            'success': True,
+            'collections': collections
+        })
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/api/patch-no-faktur', methods=['POST'])
 def patch_no_faktur():
     """Patch no_faktur dengan lookup kode_barcode ke tt_jual_detail"""
@@ -534,7 +568,7 @@ def patch_no_faktur():
             processing_status['progress'] = 10
             
             result = subprocess.run(
-                ['python3', 'patch_no_faktur_complete.py', input_file, output_file],
+                ['python3', 'patch_no_faktur_FINAL.py', input_file, output_file],
                 capture_output=True,
                 text=True,
                 timeout=3600
@@ -617,7 +651,7 @@ def patch_no_faktur_upload():
             processing_status['progress'] = 10
             
             result = subprocess.run(
-                ['python3', 'patch_no_faktur_complete.py', filepath, output_file],
+                ['python3', 'patch_no_faktur_FINAL.py', filepath, output_file],
                 capture_output=True,
                 text=True,
                 timeout=3600
@@ -659,7 +693,113 @@ def patch_no_faktur_upload():
     thread = threading.Thread(target=process)
     thread.start()
     
-    return jsonify({'success': True, 'message': 'Processing started'})
+    return jsonify({'success': True, 'message': 'Processing started', 'filename': filepath})
+
+@app.route('/api/patch-no-faktur-optimized', methods=['POST'])
+def patch_no_faktur_optimized():
+    """Patch no_faktur with OPTIMIZED script (for large files 400MB+)"""
+    global processing_status
+    
+    if processing_status['is_processing']:
+        # Auto-reset if stuck
+        processing_status['is_processing'] = False
+        processing_status['message'] = 'Auto-reset stuck process'
+    
+    data = request.json
+    input_file = data.get('input_file')
+    batch_size = data.get('batch_size', 2000)
+    
+    # Check if file exists (support both absolute and relative paths)
+    if not input_file:
+        return jsonify({'error': 'No input file provided'}), 400
+    
+    # Handle both absolute paths and filenames
+    if not os.path.isabs(input_file):
+        # Try uploads folder first
+        test_path = os.path.join('uploads', input_file)
+        if os.path.exists(test_path):
+            input_file = test_path
+    
+    if not os.path.exists(input_file):
+        return jsonify({'error': f'File not found: {input_file}'}), 400
+    
+    # Start processing in background
+    def process():
+        global processing_status
+        processing_status['is_processing'] = True
+        processing_status['progress'] = 0
+        processing_status['message'] = 'Starting optimized patch process...'
+        processing_status['error'] = None
+        
+        try:
+            # Generate output filename
+            base_name = os.path.splitext(input_file)[0]
+            output_file = f"{base_name}_no_faktur_OPTIMIZED.json"
+            
+            processing_status['message'] = 'Running optimized patch script...'
+            processing_status['progress'] = 10
+            
+            # Execute patch_no_faktur_FINAL.py (auto-reads DB mapping from .env)
+            result = subprocess.run(
+                ['python3', 'patch_no_faktur_FINAL.py', input_file, output_file],
+                capture_output=True,
+                text=True,
+                timeout=3600  # 1 hour timeout
+            )
+            
+            if result.returncode == 0:
+                if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
+                    processing_status['progress'] = 100
+                    processing_status['message'] = 'Optimized patch completed successfully!'
+                    processing_status['output_file'] = output_file
+                    
+                    # Add to processed files history
+                    file_info = {
+                        'filename': os.path.basename(output_file),
+                        'filepath': output_file,
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'patch_no_faktur_optimized',
+                        'size': os.path.getsize(output_file),
+                        'stdout': result.stdout[-500:] if result.stdout else ''  # Last 500 chars
+                    }
+                    processed_files.insert(0, file_info)
+                    if len(processed_files) > 20:
+                        processed_files.pop()
+                else:
+                    processing_status['error'] = f'Output file not created or empty'
+                    processing_status['message'] = 'Patch failed - no output'
+            else:
+                error_msg = result.stderr if result.stderr else result.stdout
+                processing_status['error'] = error_msg
+                processing_status['message'] = 'Optimized patch failed'
+        
+        except subprocess.TimeoutExpired:
+            processing_status['error'] = 'Process timeout (1 hour exceeded)'
+            processing_status['message'] = 'Process timeout'
+        except Exception as e:
+            processing_status['error'] = str(e)
+            processing_status['message'] = f'Error: {str(e)}'
+        
+        finally:
+            processing_status['is_processing'] = False
+    
+    thread = threading.Thread(target=process)
+    thread.start()
+    
+    return jsonify({'success': True, 'message': 'Optimized patch processing started'})
+
+@app.route('/api/reset-status', methods=['POST'])
+def reset_status():
+    """Reset processing status when stuck"""
+    global processing_status
+    processing_status = {
+        'is_processing': False,
+        'progress': 0,
+        'message': 'Status reset by user',
+        'output_file': None,
+        'error': None
+    }
+    return jsonify({'success': True, 'message': 'Status reset'})
 
 @app.route('/api/status')
 def get_status():
@@ -699,5 +839,3 @@ if __name__ == '__main__':
     print("Press Ctrl+C to stop")
     print("=" * 80)
     app.run(host='0.0.0.0', port=5002, debug=True)
-    print("=" * 80)
-    app.run(debug=True, host='0.0.0.0', port=5001)
