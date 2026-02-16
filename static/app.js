@@ -35,10 +35,14 @@ function testConnection() {
     statusDiv.className = 'config-status';
     statusDiv.innerHTML = '<span class="spinner"></span> Testing connection...';
 
+    // Send URI via custom header, not in payload
     fetch('/api/test-connection', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({mongodb_uri: uri})
+        headers: {
+            'Content-Type': 'application/json',
+            'X-MongoDB-URI': btoa(uri)  // Base64 encode for header safety
+        },
+        body: JSON.stringify({})
     })
     .then(response => response.json())
     .then(data => {
@@ -747,16 +751,15 @@ function loadBeliCollections(dbName) {
     const hutangSelect = document.getElementById('collection-hutang');
     const collectionSearch = document.getElementById('collection-beli-search');
     const hutangSearch = document.getElementById('collection-hutang-search');
-    const uri = document.getElementById('mongodb-uri').value;
 
-    if (!dbName || !uri) {
+    if (!dbName) {
         return;
     }
 
     fetch('/api/list-collections', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({mongodb_uri: uri, db_name: dbName})
+        body: JSON.stringify({db_name: dbName})
     })
     .then(response => response.json())
     .then(data => {
@@ -819,16 +822,15 @@ function loadJualCollections(dbName) {
     const collectionWrapper = document.getElementById('collection-jual-wrapper');
     const collectionSelect = document.getElementById('collection-jual');
     const collectionSearch = document.getElementById('collection-jual-search');
-    const uri = document.getElementById('mongodb-uri').value;
 
-    if (!dbName || !uri) {
+    if (!dbName) {
         return;
     }
 
     fetch('/api/list-collections', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({mongodb_uri: uri, db_name: dbName})
+        body: JSON.stringify({db_name: dbName})
     })
     .then(response => response.json())
     .then(data => {
@@ -869,16 +871,15 @@ function loadMemberCollections(dbName) {
     const collectionWrapper = document.getElementById('collection-member-wrapper');
     const collectionSelect = document.getElementById('collection-member');
     const collectionSearch = document.getElementById('collection-member-search');
-    const uri = document.getElementById('mongodb-uri').value;
 
-    if (!dbName || !uri) {
+    if (!dbName) {
         return;
     }
 
     fetch('/api/list-collections', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({mongodb_uri: uri, db_name: dbName})
+        body: JSON.stringify({db_name: dbName})
     })
     .then(response => response.json())
     .then(data => {

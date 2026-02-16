@@ -463,32 +463,96 @@ def save_config():
 def test_connection():
     """Test MongoDB connection"""
     try:
-        data = request.json
-        mongodb_uri = data.get('mongodb_uri', '')
+        # Try to get URI from custom header first
+        import base64
+        encoded_uri = request.headers.get('X-MongoDB-URI', '')
+        
+        if encoded_uri:
+            # Decode from base64
+            mongodb_uri = base64.b64decode(encoded_uri).decode('utf-8')
+            
+            # Save to .env file
+            env_path = os.path.join(os.path.dirname(__file__), '.env')
+            set_key(env_path, 'MONGODB_URI', mongodb_uri)
+            
+            # Reload config
+            load_dotenv(override=True)
+            Config.MONGODB_URI = mongodb_uri
+        else:
+            # Fallback to existing config
+            mongodb_uri = Config.MONGODB_URI
         
         if not mongodb_uri:
-            return jsonify({'success': False, 'error': 'MongoDB URI is required'}), 400
+            return jsonify({'success': False, 'error': 'MongoDB URI not provided. Please enter MongoDB URI.'}), 400
         
         # Import pymongo here to avoid import errors if not installed
         from pymongo import MongoClient
         from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
+        from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
         
-        # Test connection with longer timeout for replica sets
-        # Use 30 seconds timeout to allow proper primary selection
-        client = MongoClient(
-            mongodb_uri, 
-            serverSelectionTimeoutMS=30000,  # 30 seconds - enough for replica set
-            connectTimeoutMS=20000,          # 20 seconds connection timeout
-            socketTimeoutMS=120000           # 2 minutes socket timeout
-        )
+        client = None
+        databases = []
         
-        # Force connection
-        client.admin.command('ping')
+        try:
+            # First attempt: Try with original URI
+            client = MongoClient(
+                mongodb_uri, 
+                serverSelectionTimeoutMS=10000,
+                connectTimeoutMS=10000,
+                socketTimeoutMS=60000
+            )
+            client.admin.command('ping')
+            databases = client.list_database_names()
+            
+        except (ConnectionFailure, ServerSelectionTimeoutError) as e:
+            error_msg = str(e)
+            
+            # If error is related to replica set mismatch, try with directConnection
+            if 'replica set' in error_msg.lower() or 'replicaset' in error_msg.lower():
+                if client:
+                    client.close()
+                
+                # Parse URI and modify parameters
+                parsed = urlparse(mongodb_uri)
+                query_params = parse_qs(parsed.query)
+                
+                # Remove replicaSet parameter and ensure directConnection=true
+                if 'replicaSet' in query_params:
+                    del query_params['replicaSet']
+                query_params['directConnection'] = ['true']
+                
+                # Rebuild query string
+                new_query = urlencode(query_params, doseq=True)
+                new_uri = urlunparse((
+                    parsed.scheme,
+                    parsed.netloc,
+                    parsed.path,
+                    parsed.params,
+                    new_query,
+                    parsed.fragment
+                ))
+                
+                # Try connection with modified URI
+                client = MongoClient(
+                    new_uri,
+                    serverSelectionTimeoutMS=10000,
+                    connectTimeoutMS=10000,
+                    socketTimeoutMS=60000
+                )
+                client.admin.command('ping')
+                databases = client.list_database_names()
+                
+                # Update the saved URI to the working one
+                env_path = os.path.join(os.path.dirname(__file__), '.env')
+                set_key(env_path, 'MONGODB_URI', new_uri)
+                load_dotenv(override=True)
+                Config.MONGODB_URI = new_uri
+            else:
+                # Re-raise if it's a different error
+                raise
         
-        # Get list of databases
-        databases = client.list_database_names()
-        
-        client.close()
+        if client:
+            client.close()
         
         return jsonify({
             'success': True, 
@@ -497,10 +561,15 @@ def test_connection():
         })
     
     except ConnectionFailure as e:
+        print(f"ConnectionFailure: {str(e)}")
         return jsonify({'success': False, 'error': f'Connection failed: {str(e)}'}), 500
     except ServerSelectionTimeoutError as e:
+        print(f"ServerSelectionTimeoutError: {str(e)}")
         return jsonify({'success': False, 'error': 'Connection timeout. Please check your MongoDB URI and ensure MongoDB is running.'}), 500
     except Exception as e:
+        print(f"Exception in test_connection: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/list-collections', methods=['POST'])
@@ -508,11 +577,13 @@ def list_collections():
     """List collections for a given database"""
     try:
         data = request.json
-        mongodb_uri = data.get('mongodb_uri', '')
         db_name = data.get('db_name', '')
+        
+        # Use MongoDB URI from config
+        mongodb_uri = Config.MONGODB_URI
 
         if not mongodb_uri or not db_name:
-            return jsonify({'success': False, 'error': 'MongoDB URI and database name are required'}), 400
+            return jsonify({'success': False, 'error': 'MongoDB URI not configured or database name is required'}), 400
 
         from pymongo import MongoClient
 
