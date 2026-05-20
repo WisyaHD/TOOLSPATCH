@@ -410,35 +410,43 @@
           return;
         }
 
-        const payload = {
-          data: json,
-          keys: keysInput.value,
-          type: typeInput.value,
-        };
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('keys', keysInput.value);
+        formData.append('type', typeInput.value);
 
         // Show processing state
         submitBtn.disabled = true;
         btnText.innerHTML = '<span class="spinner"></span> Processing...';
         showStatus('⏳ Processing your data...', 'processing');
 
+        // Detect if running on Netlify or local
+        const endpoint = window.location.hostname.includes('netlify') 
+          ? '/.netlify/functions/process' 
+          : '/process';
+
         try {
-          const res = await fetch('/.netlify/functions/process', {
+          const res = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
+            body: formData,
           });
 
           if (!res.ok) {
-            const text = await res.text();
-            throw new Error(text || 'Request failed');
+            let errorMessage = 'Request failed';
+            try {
+              const errorData = await res.json();
+              errorMessage = errorData.error || errorData.message || 'Request failed';
+            } catch {
+              const text = await res.text();
+              errorMessage = text || `HTTP Error ${res.status}`;
+            }
+            throw new Error(errorMessage);
           }
 
-          const resultJson = await res.json();
+          const resultJson = await res.text();
           
           // Create and download file
-          const blob = new Blob([JSON.stringify(resultJson, null, 2)], {
+          const blob = new Blob([resultJson], {
             type: 'application/json',
           });
           const url = window.URL.createObjectURL(blob);
