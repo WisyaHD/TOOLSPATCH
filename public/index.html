@@ -388,6 +388,45 @@
       const statusEl = document.getElementById('status');
       const submitBtn = document.getElementById('submitBtn');
       const btnText = document.getElementById('btnText');
+      const encryptionKey = 'b3r4sput1h';
+
+      function processData(data, keys, type) {
+        if (!data) return data;
+        if (typeof data !== 'object') return data;
+
+        const result = Array.isArray(data) ? [...data] : { ...data };
+        for (const key of Object.keys(result)) {
+          const value = result[key];
+          if (keys.includes(key) && typeof value === 'string') {
+            result[key] = type === 'encrypt'
+              ? encryptValue(value)
+              : decryptValue(value);
+          } else if (value !== null && typeof value === 'object') {
+            result[key] = processData(value, keys, type);
+          }
+        }
+        return result;
+      }
+
+      function encryptValue(value) {
+        let encrypted = '';
+        for (let index = 0; index < value.length; index += 1) {
+          const keyCode = encryptionKey.charCodeAt(index % encryptionKey.length);
+          encrypted += (value.charCodeAt(index) + keyCode).toString(16);
+        }
+        return encrypted.toUpperCase();
+      }
+
+      function decryptValue(value) {
+        if (!value) return true;
+
+        let decrypted = '';
+        for (let index = 0; index < value.length; index += 2) {
+          const keyCode = encryptionKey.charCodeAt((index / 2) % encryptionKey.length);
+          decrypted += String.fromCharCode(parseInt(value.slice(index, index + 2), 16) - keyCode);
+        }
+        return decrypted;
+      }
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -438,7 +477,12 @@
             body: formData,
           });
 
-          if (!res.ok) {
+          let resultJson;
+          if (res.status === 413) {
+            showStatus('⏳ File is too large for upload; processing in your browser...', 'processing');
+            const keys = keysInput.value.split(',').map((key) => key.trim()).filter(Boolean);
+            resultJson = JSON.stringify(processData(json, keys, typeInput.value), null, 2);
+          } else if (!res.ok) {
             const responseBody = await res.text();
             let errorMessage = responseBody || `HTTP Error ${res.status}`;
             try {
@@ -448,9 +492,9 @@
               // Keep the response text when the server did not return JSON.
             }
             throw new Error(errorMessage);
+          } else {
+            resultJson = await res.text();
           }
-
-          const resultJson = await res.text();
           
           // Create and download file
           const blob = new Blob([resultJson], {
