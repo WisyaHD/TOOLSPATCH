@@ -3,32 +3,41 @@ const fs = require('fs');
 class Encryptor {
     encryptascii(str) {
         const key = process.env.ENCRYPTION_KEY || "b3r4sput1h";
-
-        const dataKey = {};
-        for (let i = 0; i < key.length; i++) {
-            dataKey[i] = key.substr(i, 1);
-        }
-
-        let strEnc = "";
-        let nkey = 0;
-        const jml = str.length;
-
-        for (let i = 0; i < parseInt(jml); i++) {
-            strEnc =
-                strEnc +
-                this.hexEncode(str[i].charCodeAt(0) + dataKey[nkey].charCodeAt(0));
-
-            if (nkey === Object.keys(dataKey).length - 1) {
-                nkey = 0;
+        const encodedCharacters = [];
+        let needsWideEncoding = false;
+        for (let i = 0; i < str.length; i++) {
+            const encodedCharacter = str.charCodeAt(i) + key.charCodeAt(i % key.length);
+            encodedCharacters.push(encodedCharacter);
+            if (encodedCharacter < 16 || encodedCharacter > 255) {
+                needsWideEncoding = true;
             }
-            nkey = nkey + 1;
         }
-        return strEnc.toUpperCase();
+
+        if (needsWideEncoding) {
+            return "U1" + encodedCharacters
+                .map((character) => character.toString(16).padStart(5, "0"))
+                .join("")
+                .toUpperCase();
+        }
+
+        return encodedCharacters
+            .map((character) => this.hexEncode(character))
+            .join("")
+            .toUpperCase();
     }
 
     decryptascii(str) {
         if (str) {
             const key = process.env.ENCRYPTION_KEY || "b3r4sput1h";
+            if (str.startsWith("U1")) {
+                let decoded = "";
+                for (let i = 2; i < str.length; i += 5) {
+                    const keyCode = key.charCodeAt(((i - 2) / 5) % key.length);
+                    decoded += this.chr(this.hexdec(str.substr(i, 5)) - keyCode);
+                }
+                return decoded;
+            }
+
             const dataKey = {};
             for (let i = 0; i < key.length; i++) {
                 dataKey[i] = key.substr(i, 1);

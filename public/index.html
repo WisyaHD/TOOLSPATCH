@@ -343,7 +343,7 @@
           </div>
           <h1>JSON Encrypt Tool</h1>
           <p class="subtitle">Secure your JSON data with encryption</p>
-          <p class="version">Version 1.0.2</p>
+          <p class="version">Version 1.0.3</p>
         </div>
         <form id="form">
           <div class="field">
@@ -409,16 +409,41 @@
       }
 
       function encryptValue(value) {
-        let encrypted = '';
+        const encodedCharacters = [];
+        let needsWideEncoding = false;
         for (let index = 0; index < value.length; index += 1) {
           const keyCode = encryptionKey.charCodeAt(index % encryptionKey.length);
-          encrypted += (value.charCodeAt(index) + keyCode).toString(16);
+          const encodedCharacter = value.charCodeAt(index) + keyCode;
+          encodedCharacters.push(encodedCharacter);
+          if (encodedCharacter < 16 || encodedCharacter > 255) {
+            needsWideEncoding = true;
+          }
         }
-        return encrypted.toUpperCase();
+
+        if (needsWideEncoding) {
+          return 'U1' + encodedCharacters
+            .map((character) => character.toString(16).padStart(5, '0'))
+            .join('')
+            .toUpperCase();
+        }
+
+        return encodedCharacters
+          .map((character) => character.toString(16))
+          .join('')
+          .toUpperCase();
       }
 
       function decryptValue(value) {
         if (!value) return true;
+
+        if (value.startsWith('U1')) {
+          let decoded = '';
+          for (let index = 2; index < value.length; index += 5) {
+            const keyCode = encryptionKey.charCodeAt(((index - 2) / 5) % encryptionKey.length);
+            decoded += String.fromCharCode(parseInt(value.slice(index, index + 5), 16) - keyCode);
+          }
+          return decoded;
+        }
 
         let decrypted = '';
         for (let index = 0; index < value.length; index += 2) {
