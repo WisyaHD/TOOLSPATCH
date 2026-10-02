@@ -343,7 +343,7 @@
           </div>
           <h1>JSON Encrypt Tool</h1>
           <p class="subtitle">Secure your JSON data with encryption</p>
-          <p class="version">Version 1.0.3</p>
+          <p class="version">Version 1.0.4</p>
         </div>
         <form id="form">
           <div class="field">
@@ -445,12 +445,65 @@
           return decoded;
         }
 
-        let decrypted = '';
+        let moduloDecoded = '';
+        let legacyDecoded = '';
+        let legacyKeyIndex = 0;
         for (let index = 0; index < value.length; index += 2) {
-          const keyCode = encryptionKey.charCodeAt((index / 2) % encryptionKey.length);
-          decrypted += String.fromCharCode(parseInt(value.slice(index, index + 2), 16) - keyCode);
+          const encodedCharacter = parseInt(value.slice(index, index + 2), 16);
+          moduloDecoded += String.fromCharCode(
+            encodedCharacter - encryptionKey.charCodeAt((index / 2) % encryptionKey.length)
+          );
+          legacyDecoded += String.fromCharCode(
+            encodedCharacter - encryptionKey.charCodeAt(legacyKeyIndex)
+          );
+          if (legacyKeyIndex === encryptionKey.length - 1) legacyKeyIndex = 0;
+          legacyKeyIndex += 1;
         }
-        return decrypted;
+
+        if (/[\u0000-\u001F\u007F-\u009F\uFFFD\uFFFE\uFFFF]/.test(legacyDecoded)) {
+          if (!/[\u0000-\u001F\u007F-\u009F\uFFFD\uFFFE\uFFFF]/.test(moduloDecoded)) {
+            return moduloDecoded;
+          }
+          const recovered = recoverLegacyUnicode(value);
+          if (recovered !== null) return recovered;
+        }
+
+        return legacyDecoded;
+      }
+
+      function recoverLegacyUnicode(value) {
+        if (!/^[0-9a-f]+$/i.test(value)) return null;
+
+        const memo = new Map();
+        const find = (offset, keyIndex) => {
+          if (offset === value.length) return [''];
+          const state = `${offset}:${keyIndex}`;
+          if (memo.has(state)) return memo.get(state);
+
+          const solutions = [];
+          for (let width = 1; width <= 5 && offset + width <= value.length; width += 1) {
+            const segment = value.slice(offset, offset + width);
+            const encodedCharacter = parseInt(segment, 16);
+            if (encodedCharacter.toString(16).length !== width) continue;
+
+            const characterCode = encodedCharacter - encryptionKey.charCodeAt(keyIndex);
+            if (characterCode < 0 || characterCode > 0xffff) continue;
+            if (characterCode >= 0xd800 && characterCode <= 0xdfff) continue;
+            if (!/[\p{Script=Latin}\p{N}\p{P}\p{S}\p{Z}]/u.test(String.fromCharCode(characterCode))) continue;
+
+            for (const suffix of find(offset + width, (keyIndex + 1) % encryptionKey.length)) {
+              solutions.push(String.fromCharCode(characterCode) + suffix);
+              if (solutions.length > 1) break;
+            }
+            if (solutions.length > 1) break;
+          }
+
+          memo.set(state, solutions);
+          return solutions;
+        };
+
+        const solutions = find(0, 0);
+        return solutions.length === 1 ? solutions[0] : null;
       }
 
       form.addEventListener('submit', async (e) => {
