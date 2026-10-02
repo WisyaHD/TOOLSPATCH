@@ -14,8 +14,10 @@ exports.handler = async (event, context) => {
 
   try {
     // Parse the multipart form data
-    const boundary = multipart.getBoundary(event.headers['content-type']);
-    const parts = multipart.parse(Buffer.from(event.body, 'base64'), boundary);
+    const contentType = event.headers['content-type'] || event.headers['Content-Type'];
+    const boundary = multipart.getBoundary(contentType);
+    const requestBody = Buffer.from(event.body || '', event.isBase64Encoded ? 'base64' : 'utf8');
+    const parts = multipart.parse(requestBody, boundary);
 
     // Find the file and form fields
     let fileData = null;

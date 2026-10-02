@@ -343,7 +343,7 @@
           </div>
           <h1>JSON Encrypt Tool</h1>
           <p class="subtitle">Secure your JSON data with encryption</p>
-          <p class="version">Version 1.0.1</p>
+          <p class="version">Version 1.0.2</p>
         </div>
         <form id="form">
           <div class="field">
@@ -478,8 +478,8 @@
           });
 
           let resultJson;
-          if (res.status === 413) {
-            showStatus('⏳ File is too large for upload; processing in your browser...', 'processing');
+          if (res.status === 400 || res.status === 413) {
+            showStatus('⏳ Server rejected the upload; processing in your browser...', 'processing');
             const keys = keysInput.value.split(',').map((key) => key.trim()).filter(Boolean);
             resultJson = JSON.stringify(processData(json, keys, typeInput.value), null, 2);
           } else if (!res.ok) {
