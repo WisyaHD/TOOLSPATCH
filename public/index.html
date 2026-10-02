@@ -439,13 +439,13 @@
           });
 
           if (!res.ok) {
-            let errorMessage = 'Request failed';
+            const responseBody = await res.text();
+            let errorMessage = responseBody || `HTTP Error ${res.status}`;
             try {
-              const errorData = await res.json();
-              errorMessage = errorData.error || errorData.message || 'Request failed';
+              const errorData = JSON.parse(responseBody);
+              errorMessage = errorData.error || errorData.message || errorMessage;
             } catch {
-              const text = await res.text();
-              errorMessage = text || `HTTP Error ${res.status}`;
+              // Keep the response text when the server did not return JSON.
             }
             throw new Error(errorMessage);
           }
